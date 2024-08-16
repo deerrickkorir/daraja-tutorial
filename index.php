@@ -105,26 +105,35 @@
     <script>
         document.getElementById('mpesaForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent the form from submitting normally
-            
-            const formData = new FormData(this);
-            
-            fetch('./stk_initiate.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Redirect to the previous page if payment is successful
-                    window.location.href = document.referrer || '/';
-                } else {
-                    alert('Payment failed. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-            });
+
+            // Show a confirmation dialog
+            const userConfirmed = confirm('Are you sure you want to make the payment?');
+
+            if (userConfirmed) {
+                // If the user confirms, proceed with the form submission
+                const formData = new FormData(this);
+
+                fetch('./stk_initiate.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Redirect to the previous page if payment is successful
+                        window.location.href = document.referrer || '/';
+                    } else {
+                        alert('Payment failed. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
+            } else {
+                // If the user cancels, do nothing
+                console.log('Payment canceled by the user.');
+            }
         });
     </script>
 </body>
