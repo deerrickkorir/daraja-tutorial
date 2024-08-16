@@ -68,39 +68,64 @@
         border-radius: 15px;
       }
     </style>
-  </head>
-  <body oncontextmenu="return false" class="snippet-body">
+</head>
+<body oncontextmenu="return false" class="snippet-body">
     <div class="container d-flex justify-content-center">
-      <div class="card mt-5 px-3 py-4">
-        <div class="d-flex flex-row justify-content-around">
-          <div class="mpesa"><span>Mpesa</span></div>
-        </div>
-        <div class="media mt-4 pl-2">
-          <img src="./images/1200px-M-PESA_LOGO-01.svg.png" class="mr-3" height="75" />
-          <div class="media-body">
-            <h6 class="mt-1">Enter Amount & Number</h6>
-          </div>
-        </div>
-        <div class="media mt-3 pl-2">
-            <form class="row g-3" action="./stk_initiate.php" method="POST">
-                <div class="col-12">
-                  <label for="inputAddress" class="form-label">Amount</label>
-                  <input type="text" class="form-control" name="amount" placeholder="Enter Amount">
+        <div class="card mt-5 px-3 py-4">
+            <div class="d-flex flex-row justify-content-around">
+                <div class="mpesa"><span>Mpesa</span></div>
+            </div>
+            <div class="media mt-4 pl-2">
+                <img src="./images/1200px-M-PESA_LOGO-01.svg.png" class="mr-3" height="75" />
+                <div class="media-body">
+                    <h6 class="mt-1">Enter Amount & Number</h6>
                 </div>
-                <div class="col-12">
-                  <label for="inputAddress2" class="form-label">Phone Number</label>
-                  <input type="text" class="form-control" name="phone" placeholder="Enter Phone Number">
-                </div>
-                <div class="col-12">
-                  <button type="submit" class="btn btn-success" name="submit" value="submit">Pay</button>
-                </div>
-            </form>
+            </div>
+            <div class="media mt-3 pl-2">
+                <form id="mpesaForm" class="row g-3" action="./stk_initiate.php" method="POST">
+                    <div class="col-12">
+                        <label for="inputAddress" class="form-label">Amount</label>
+                        <input type="text" class="form-control" name="amount" placeholder="Enter Amount">
+                    </div>
+                    <div class="col-12">
+                        <label for="inputAddress2" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" name="phone" placeholder="Enter Phone Number">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-success" name="submit" value="submit">Pay</button>
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
     </div>
     <script
       type="text/javascript"
       src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
     ></script>
-  </body>
+    <script>
+        document.getElementById('mpesaForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+            
+            const formData = new FormData(this);
+            
+            fetch('./stk_initiate.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to the previous page if payment is successful
+                    window.location.href = document.referrer || '/';
+                } else {
+                    alert('Payment failed. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        });
+    </script>
+</body>
 </html>
